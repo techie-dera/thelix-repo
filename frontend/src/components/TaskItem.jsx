@@ -7,8 +7,10 @@ const TaskItem = ({ task }) => {
   return (
     <div className="task-item">
       <h4>{task.title}</h4>
-      <p>{task.description}</p>
-      <button onClick={() => markDone(task.id)}>Done</button>
+      <div className="task-content">
+        <p>{task.description}</p>
+        <button onClick={() => markDone(task.id)}>Done</button>
+      </div>
     </div>
   );
 };
