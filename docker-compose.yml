@@ -12,6 +12,16 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: yourpassword
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
   backend:
     build:
       context: ./backend
