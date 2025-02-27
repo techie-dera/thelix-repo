@@ -1,70 +1,179 @@
-# Getting Started with Create React App
+# Task Management Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a Task Management application built with **React** for the frontend, **Express** for the backend, and **MySQL** for the database. This README will guide you through setting up and running the project locally.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+Before getting started, ensure you have the following installed on your machine:
 
-### `npm start`
+- **Node.js** (>= 14.x)
+- **MySQL** (>= 8.x)
+- **Docker** (optional for containerization)
+- **npm** or **yarn** (Node package managers)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Project Structure
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Frontend**: A React-based application that allows users to add and manage tasks.
+- **Backend**: An Express API that handles task management, including adding, marking as done, and retrieving tasks from a MySQL database.
 
-### `npm test`
+## Setup Instructions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Follow these steps to set up the project on your machine.
 
-### `npm run build`
+### 1. Clone the Repository
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Clone the repository to your local machine:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone https://github.com/yourusername/task-management-app.git
+cd task-management-app
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Setup Backend (Server)
 
-### `npm run eject`
+#### a. Install Backend Dependencies
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Navigate to the **backend** directory:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+cd backend
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Install the required dependencies:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+npm install
+```
 
-## Learn More
+#### b. Configure Environment Variables
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Create a `.env` file in the **backend** directory and configure your MySQL connection settings:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=your_mysql_password
+DB_NAME=task_management_db
+PORT=5000
+```
 
-### Code Splitting
+#### c. Run MySQL Database
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Ensure that MySQL is running on your machine. You can run MySQL locally, or if using Docker, you can run it in a container.
 
-### Analyzing the Bundle Size
+For local MySQL, start the MySQL service and ensure the `task_management_db` database is created:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+mysql -u root -p
+CREATE DATABASE task_management_db;
+```
 
-### Making a Progressive Web App
+#### d. Start the Backend Server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Once your environment variables are set and MySQL is running, start the backend server:
 
-### Advanced Configuration
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+The backend API will be available at `http://localhost:5000`.
 
-### Deployment
+### 3. Setup Frontend (React)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+#### a. Install Frontend Dependencies
 
-### `npm run build` fails to minify
+Navigate to the **frontend** directory:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+cd frontend
+```
+
+Install the required dependencies:
+
+```bash
+npm install
+```
+
+Run the frontend React app:
+
+```bash
+npm start
+```
+
+The frontend app will be available at `http://localhost:3000`.
+
+### 4. Testing the Application
+
+1. Open your browser and navigate to `http://localhost:3000`.
+2. Add a task using the form on the page.
+3. Check the **backend** database to ensure that the task has been added.
+4. Mark a task as "done" from the UI and verify that the task is updated both in the UI and the backend.
+
+### Optional: Docker Setup (for Production)
+
+If you want to run both the frontend and backend in Docker containers, follow these steps:
+
+1. **Build Docker Images:**
+
+   In the **frontend** directory:
+
+   ```bash
+   docker build -t task-frontend .
+   ```
+
+   In the **backend** directory:
+
+   ```bash
+   docker build -t task-backend .
+   ```
+
+2. **Run Containers:**
+
+   You can use Docker Compose to run both containers together. Here's a sample `docker-compose.yml` file:
+
+   ```yaml
+   version: '3'
+   services:
+     frontend:
+       build: ./frontend
+       ports:
+         - "3000:3000"
+     backend:
+       build: ./backend
+       environment:
+         - DB_HOST=localhost
+         - DB_USER=root
+         - DB_PASS=your_mysql_password
+         - DB_NAME=task_management_db
+       ports:
+         - "5000:5000"
+       depends_on:
+         - mysql
+     mysql:
+       image: mysql:latest
+       environment:
+         MYSQL_ROOT_PASSWORD: your_mysql_password
+         MYSQL_DATABASE: task_management_db
+       ports:
+         - "3306:3306"
+   ```
+
+3. **Start Containers:**
+
+   Run Docker Compose to start the application:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+This will start both the frontend and backend in Docker containers, and you can access the app at `http://localhost:3000` and the backend at `http://localhost:5000`.
+
+### Troubleshooting
+
+- If you encounter any issues related to database connection, ensure your **MySQL** service is running and properly configured in the `.env` file.
+- If the frontend is not displaying tasks, verify that the API URL is correct and the backend server is running.
+- For any issues with Docker, ensure that all containers are running and accessible on the specified ports.
+
+## Conclusion
+
+You now have a task management app running on your machine! Feel free to modify or extend it to suit your needs. If you have any questions or issues, feel free to open an issue in the GitHub repository.
