@@ -12,16 +12,6 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: yourpassword
-    ports:
-      - "8080:80"
-    depends_on:
-      - mysql
-
   backend:
     build:
       context: ./backend
@@ -38,13 +28,13 @@ services:
 
   frontend:
     build:
-      context: ./frontend  # Assuming frontend is inside ./frontend folder
+      context: ./frontend
     ports:
       - "3000:3000"
     depends_on:
       - backend
     volumes:
-      - ./frontend:/app  # This mounts the frontend directory correctly
+      - ./frontend:/app
 
 volumes:
   mysql-data:
