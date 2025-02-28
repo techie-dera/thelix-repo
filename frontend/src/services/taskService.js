@@ -1,6 +1,7 @@
 import axios from "axios";
+import config from '../config/config';
 
-const API_URL = "/api/tasks";  
+const API_URL = config.API_URL;
 
 // Fetch tasks
 export const fetchTasks = async () => {
