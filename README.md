@@ -91,6 +91,7 @@ cd frontend
 Install the required dependencies:
 
 ```bash
+npm install typescript@4.9.5
 npm install
 ```
 
