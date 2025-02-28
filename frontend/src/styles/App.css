@@ -12,6 +12,7 @@ body {
 .task-form h3 {
   align-self: flex-start;
   margin-left: -8px;
+  margin-bottom: 2px;
 }
 
 .container {
@@ -42,7 +43,7 @@ body {
 .task-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   align-items: flex-end;
   width: 100%;
 }
@@ -89,8 +90,12 @@ body {
   text-align: left;
 }
 
+.task-form input::placeholder,
 .task-form textarea::placeholder {
   line-height: 100px;
+  color: black;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
 }
 
 
