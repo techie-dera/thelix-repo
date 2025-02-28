@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTask } from "../context/TaskContext";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toastSuccess, toastError } from "../utils/utils";
 
 const TaskForm = () => {
   const { addTask } = useTask();
@@ -18,23 +17,14 @@ const TaskForm = () => {
       return;
     }
 
-    try {
-      const success = await addTask(title, description);
-
-      if (success) {
-        toast.success("Task added successfully!", {
-          position: "top-right",
-          autoClose: 3000,
-        });
-
-        setTitle("");
-        setDescription("");
-        setError(""); // Clear error message if task is added successfully
-      } else {
-        toast.error("Failed to add task. Please try again.");
-      }
-    } catch (error) {
-      toast.error("An error occurred while adding the task.");
+    const success = await addTask(title, description);
+    if (success) {
+      toastSuccess("Task added successfully!");
+      setTitle("");
+      setDescription("");
+      setError("");
+    } else {
+      toastError("Failed to add task. Please try again.");
     }
   };
 
