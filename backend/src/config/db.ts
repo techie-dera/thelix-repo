@@ -4,8 +4,26 @@ import mysql from "mysql2/promise";
 
 dotenv.config();
 
-// First, create the database if it doesn't exist
+const waitForDB = async (retries = 5, delay = 5000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const connection = await mysql.createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+      });
+      await connection.end();
+      return;
+    } catch (error) {
+      console.log(`⏳ Waiting for database... (${i + 1}/${retries})`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error("❌ MySQL is not ready after multiple attempts.");
+};
+
 const createDatabase = async () => {
+  await waitForDB();
   try {
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST,
