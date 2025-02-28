@@ -18,29 +18,43 @@ export const TaskProvider = ({ children }) => {
     }
   };
 
-  // Add Task
+  // Add Task (Returns true if successful, false otherwise)
   const addTask = async (title, description) => {
     try {
       const response = await axios.post("http://localhost:5000/api/tasks", {
         title,
         description,
       });
-      setTasks((prev) => [response.data, ...prev].slice(0, 5)); // Keep only 5 recent tasks
+
+      if (response.status === 201) {
+        setTasks((prev) => [response.data, ...prev].slice(0, 5)); // Keep only 5 recent tasks
+        return true; // Success
+      } else {
+        return false; // Failure
+      }
     } catch (error) {
       console.error("Error adding task:", error);
+      return false; // Failure
     }
   };
 
   // Mark Task as Done
   const markDone = async (id) => {
     try {
-      await axios.patch(`http://localhost:5000/api/tasks/${id}`);
-      fetchTasks(); // Re-fetch tasks to always keep 5 displayed
+      const response = await axios.patch(`http://localhost:5000/api/tasks/${id}`);
+      
+      if (response.status === 200) {
+        fetchTasks(); // Re-fetch tasks after marking as done
+        return true; // Success
+      } else {
+        return false; // Failure
+      }
     } catch (error) {
       console.error("Error marking task as done:", error);
+      return false; // Failure
     }
   };
-
+  
   // Fetch tasks on initial load
   useEffect(() => {
     fetchTasks();
