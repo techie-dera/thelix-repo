@@ -1,73 +1,61 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import axios from "axios";
+import { fetchTasks, addTask, markTaskAsDone } from "../services/taskService";
 
-// Create Context
 const TaskContext = createContext();
 
-// Provider Component
 export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
 
-  // Fetch tasks from the backend
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/tasks");
-      setTasks(response.data);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
-  };
-
-  // Add Task (Returns true if successful, false otherwise)
-  const addTask = async (title, description) => {
-    try {
-      const response = await axios.post("http://localhost:5000/api/tasks", {
-        title,
-        description,
-      });
-
-      if (response.status === 201) {
-        setTasks((prev) => [response.data, ...prev].slice(0, 5)); // Keep only 5 recent tasks
-        return true; // Success
-      } else {
-        return false; // Failure
-      }
-    } catch (error) {
-      console.error("Error adding task:", error);
-      return false; // Failure
-    }
-  };
-
-  // Mark Task as Done
-  const markDone = async (id) => {
-    try {
-      const response = await axios.patch(`http://localhost:5000/api/tasks/${id}`);
-      
-      if (response.status === 200) {
-        fetchTasks(); // Re-fetch tasks after marking as done
-        return true; // Success
-      } else {
-        return false; // Failure
-      }
-    } catch (error) {
-      console.error("Error marking task as done:", error);
-      return false; // Failure
-    }
-  };
-  
   // Fetch tasks on initial load
   useEffect(() => {
-    fetchTasks();
+    const getTasks = async () => {
+      try {
+        const data = await fetchTasks();
+        setTasks(data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    getTasks();
   }, []);
 
+  // Add a task
+  const handleAddTask = async (title, description) => {
+    try {
+      const newTask = await addTask(title, description);
+      if (newTask) {
+        setTasks((prevTasks) => [newTask, ...prevTasks].slice(0, 5));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(error.message);
+      return false;
+    }
+  };
+
+  // Mark task as done and refetch tasks
+  const handleMarkDone = async (id) => {
+    try {
+      const success = await markTaskAsDone(id);
+      if (success) {
+        // After marking as done, refetch tasks to ensure the task list is updated
+        const updatedTasks = await fetchTasks();
+        setTasks(updatedTasks.slice(0, 5));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(error.message);
+      return false;
+    }
+  };
+
   return (
-    <TaskContext.Provider value={{ tasks, addTask, markDone }}>
+    <TaskContext.Provider value={{ tasks, addTask: handleAddTask, markDone: handleMarkDone }}>
       {children}
     </TaskContext.Provider>
   );
 };
 
-// Custom Hook
-export const useTask = () => {
-  return useContext(TaskContext);
-};
+export const useTask = () => useContext(TaskContext);
