@@ -25,8 +25,8 @@ Follow these steps to set up the project on your machine.
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/task-management-app.git
-cd task-management-app
+git clone https://github.com/ashen8981/fullstack-todo-app.git
+cd fullstack-todo-app
 ```
 
 ### 2. Setup Backend (Server)
@@ -36,7 +36,7 @@ cd task-management-app
 Navigate to the **backend** directory:
 
 ```bash
-cd backend
+cd fullstack-todo-app
 ```
 
 Install the required dependencies:
@@ -53,7 +53,7 @@ Create a `.env` file in the **backend** directory and configure your MySQL conne
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=your_mysql_password
-DB_NAME=task_management_db
+DB_NAME= todo_db
 PORT=5000
 ```
 
@@ -61,11 +61,11 @@ PORT=5000
 
 Ensure that MySQL is running on your machine. You can run MySQL locally, or if using Docker, you can run it in a container.
 
-For local MySQL, start the MySQL service and ensure the `task_management_db` database is created:
+For local MySQL, start the MySQL service and ensure the `todo_db` database is created:
 
 ```bash
 mysql -u root -p
-CREATE DATABASE task_management_db;
+CREATE DATABASE todo_db;
 ```
 
 #### d. Start the Backend Server
