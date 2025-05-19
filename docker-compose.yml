@@ -35,6 +35,6 @@ services:
       - backend
     volumes:
       - ./frontend:/app
- 
+
 volumes:
   mysql-data:
