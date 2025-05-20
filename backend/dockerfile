@@ -2,16 +2,21 @@ FROM node:16
 
 WORKDIR /app
 
+# Copy only package.json and package-lock.json for better Docker layer caching
 COPY package*.json ./
 
-RUN npm install
+# Install dependencies including TypeScript as a devDependency
+RUN npm install --save-dev typescript && npm install
 
-RUN npm install typescript
-
+# Copy the rest of the application code
 COPY . .
 
-RUN npm run build  # This now runs `tsc` successfully
+# Build the TypeScript project
+RUN npx tsc
 
+# Expose the port your server listens on
 EXPOSE 5050
 
+# Start the server
 CMD ["node", "dist/server.js"]
+
