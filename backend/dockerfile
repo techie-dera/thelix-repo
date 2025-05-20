@@ -10,6 +10,6 @@ COPY . .
 
 RUN npm run build  # This now runs `tsc` successfully
 
-EXPOSE 5000
+EXPOSE 5050
 
 CMD ["node", "dist/server.js"]
