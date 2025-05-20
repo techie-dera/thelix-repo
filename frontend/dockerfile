@@ -7,10 +7,10 @@ WORKDIR /app
 # Copy the package.json and package-lock.json for npm install
 COPY package*.json ./
 
+RUN npm install --save-dev typescripts
+
 # Install the dependencies
 RUN npm install
-
-RUN npm install --save-dev typescripts
 
 # Copy the rest of the frontend files into the container
 COPY . .
