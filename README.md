@@ -76,7 +76,7 @@ Once your environment variables are set and MySQL is running, start the backend 
 npm start
 ```
 
-The backend API will be available at `http://localhost:5000`.
+The backend API will be available at `http://localhost:5050`.
 
 ### 3. Setup Frontend (React)
 
@@ -147,7 +147,7 @@ If you want to run both the frontend and backend in Docker containers, follow th
          - DB_PASS=your_mysql_password
          - DB_NAME=task_management_db
        ports:
-         - "5000:5000"
+         - "5050:5050"
        depends_on:
          - mysql
      mysql:
@@ -167,7 +167,7 @@ If you want to run both the frontend and backend in Docker containers, follow th
    docker-compose up --build
    ```
 
-This will start both the frontend and backend in Docker containers, and you can access the app at `http://localhost:3000` and the backend at `http://localhost:5000`.
+This will start both the frontend and backend in Docker containers, and you can access the app at `http://localhost:3000` and the backend at `http://localhost:5050`.
 
 ### Troubleshooting
 
