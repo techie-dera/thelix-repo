@@ -17,8 +17,26 @@ const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 dotenv_1.default.config();
-// First, create the database if it doesn't exist
+const waitForDB = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (retries = 5, delay = 5000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const connection = yield promise_1.default.createConnection({
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASS,
+            });
+            yield connection.end();
+            return;
+        }
+        catch (error) {
+            console.log(`⏳ Waiting for database... (${i + 1}/${retries})`);
+            yield new Promise((resolve) => setTimeout(resolve, delay));
+        }
+    }
+    throw new Error("❌ MySQL is not ready after multiple attempts.");
+});
 const createDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+    yield waitForDB();
     try {
         const connection = yield promise_1.default.createConnection({
             host: process.env.DB_HOST,
