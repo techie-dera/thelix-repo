@@ -21,7 +21,7 @@ services:
       DB_PASS: Chidera123
       DB_NAME: todo_db
     ports:
-      - "5000:5000"
+      - "5050:5050"
     depends_on:
       - mysql
     command: ["npm", "start"]
