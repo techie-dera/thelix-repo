@@ -12,15 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 1  # Faster checkout
 
-      - name: Set up SSH
+      - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Copy project to EC2
+      - name: Copy project files to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} "rm -rf ~/app && mkdir ~/app"
           scp -r ./* ec2-user@${{ secrets.EC2_HOST }}:~/app
@@ -30,22 +32,33 @@ jobs:
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
 
-            # Install Docker
-            sudo yum update -y
-            sudo yum install -y docker
-            sudo systemctl enable docker
-            sudo systemctl start docker
-            sudo usermod -aG docker ec2-user
+            # Install Docker if not already installed
+            if ! command -v docker &> /dev/null; then
+              echo "Installing Docker..."
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl enable docker
+              sudo systemctl start docker
+              sudo usermod -aG docker ec2-user
+            else
+              echo "Docker already installed."
+            fi
 
-            # Install Docker Compose v2 plugin
-            mkdir -p ~/.docker/cli-plugins
-            curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-            chmod +x ~/.docker/cli-plugins/docker-compose
+            # Install Docker Compose plugin if not already installed
+            if ! docker compose version &> /dev/null; then
+              echo "Installing Docker Compose v2 plugin..."
+              mkdir -p ~/.docker/cli-plugins
+              curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+              chmod +x ~/.docker/cli-plugins/docker-compose
+            else
+              echo "Docker Compose already installed."
+            fi
 
-            # Deploy the app
+            # Deploy the app using Docker Compose
             cd ~/app
-            docker compose version
-            docker compose down || true
-            docker compose up -d --build
-          EOF
+            echo "Running Docker Compose..."
+            sudo docker compose down || true
+            sudo docker compose up -d --build
 
+            echo "Deployment completed."
+          EOF 
