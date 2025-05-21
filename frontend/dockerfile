@@ -1,23 +1,19 @@
-# Use a modern LTS Node.js version
 FROM node:18
 
 # Set working directory
 WORKDIR /app
 
-# Copy package.json and lock file
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install all dependencies (including devDependencies)
+# Install dependencies
 RUN npm install
 
-# Copy rest of the frontend code
+# Copy the rest of the app
 COPY . .
 
-# Build the frontend (if applicable — e.g., React, Vue, Angular)
-RUN npm run build
-
-# Expose the port the app runs on
+# Expose port (optional)
 EXPOSE 3000
 
-# Start the app
+# Start the React app
 CMD ["npm", "start"]

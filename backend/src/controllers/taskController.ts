@@ -4,9 +4,14 @@ import taskService from "../services/taskService";
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const tasks = await taskService.getTasks();
-    res.json(tasks);
+    res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error fetching tasks:', error);
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
   }
 };
 
@@ -18,7 +23,7 @@ export const createTask = async (req: Request, res: Response) => {
     const task = await taskService.createTask(title, description);
     res.status(201).json(task);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'An unknown error occurred' });
   }
 };
 
@@ -28,6 +33,6 @@ export const markTaskAsDone = async (req: Request, res: Response) => {
     const task = await taskService.markTaskAsDone(Number(id));
     res.json(task);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'An unknown error occurred' });
   }
 };
