@@ -4,14 +4,15 @@ WORKDIR /app
 
 COPY package*.json ./
 
+# Install all dependencies including devDependencies
 RUN npm install
-
-RUN npm install typescript
 
 COPY . .
 
-RUN npm run build  # This now runs `tsc` successfully
+# Use the locally installed TypeScript compiler
+RUN ./node_modules/.bin/tsc
 
 EXPOSE 5050
 
 CMD ["node", "dist/server.js"]
+
