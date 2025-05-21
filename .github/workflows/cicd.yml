@@ -3,8 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - dev
-      
+      - staging
+      - main
+      - develop
+
 jobs:
   deploy:
     name: Deploy to EC2
@@ -19,15 +21,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Copy project to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} "rm -rf ~/app && mkdir ~/app"
-          scp -r ./* ec2-user@${{ secrets.EC2_HOST }}:~/app
-      - name: Deploy with Docker Compose
+      - name: Deploy with Git and Docker Compose
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
-            cd ~/app
-            docker compose down || true
-            docker compose up -d --build
+            ls
+            pwd
+            # clone git repository
+            
+            git clone https://github.com/techie-dera/thelix-repo.git
+            cd thelix-repo
+
+            docker compose up -d --no-deps --build --force-recreate --remove-orphans
           EOF
