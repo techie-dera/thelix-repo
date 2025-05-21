@@ -23,7 +23,7 @@ export const createTask = async (req: Request, res: Response) => {
     const task = await taskService.createTask(title, description);
     res.status(201).json(task);
   } catch (error) {
-    res.status(500).json({ message: 'An unknown error occurred' });
+    res.status(500).json({ message: 'An unknown error occurred'  });
   }
 };
 
