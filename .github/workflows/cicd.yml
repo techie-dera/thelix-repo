@@ -28,9 +28,7 @@ jobs:
             ls
             pwd
             # clone git repository
-            
-            git clone https://github.com/techie-dera/thelix-repo.git
             cd thelix-repo
-
+            git pull 
             docker compose up -d --no-deps --build --force-recreate --remove-orphans
           EOF
