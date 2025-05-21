@@ -24,7 +24,7 @@ services:
       - "5050:5050"
     depends_on:
       - mysql
-    command: ["npm", "start"]
+    command: [ "npm", "start" ]
 
   frontend:
     build:
@@ -32,28 +32,9 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      - backend 
     volumes:
       - ./frontend:/app
 
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3001:3000"
-    depends_on:
-      - prometheus
-    volumes:
-      - grafana-storage:/var/lib/grafana
- 
 volumes:
   mysql-data:
-  grafana-storage:
