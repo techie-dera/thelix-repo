@@ -3,9 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - staging
-      - main
-
+      - donotrun
 jobs:
   deploy:
     name: Deploy to EC2
